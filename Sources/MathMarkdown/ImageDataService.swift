@@ -102,7 +102,9 @@ public struct ImageDataService {
 
     func localImages(_ imageEntries: [(label: String, fileName: String)], notify notifier: ImageOpNotification & ImageResourceLocator) {
         @Sendable func bundleImage(label: String, fileName: String) async -> ImageOpResult {
-            guard let url = await notifier.fileUrl(resource: fileName), let img = SwiftMathImage(contentsOf: url) else {
+            guard let url = await notifier.fileUrl(resource: fileName), 
+                    let data = try? Data(contentsOf: url),
+                    let img = SwiftMathImage(data: data) else {
                 return ImageOpResult(label: label, error: NetworkImageError.imageError.nserr, image: nil)
             }
             return ImageOpResult(label: label, error: nil, image: img)
