@@ -6,7 +6,7 @@
 //
 
 import XCTest
-@testable import SwiftMathMark
+@testable import MathMarkdown
 import Markdown
 
 final class ImageDataServiceTests: XCTestCase {
@@ -43,15 +43,15 @@ final class ImageDataServiceTests: XCTestCase {
         var grouping: [String: [(String, URL)]] = [:]
         var latestList = [(String, URL)]()
         var latestHost = ""
-        networkSamples.forEach { label, url in
-            if let url = url, let host = url.host(), host == latestHost {
-                latestList.append((label, url))
-            } else if let url = url {
-                grouping[latestHost] = latestList
-                latestList = [(label, url)]
-                latestHost = url.host() ?? ""
-            }
-        }
+        // networkSamples.forEach { label, url in
+        //     if let url = url, let host = url.host(), host == latestHost {
+        //         latestList.append((label, url))
+        //     } else if let url = url {
+        //         grouping[latestHost] = latestList
+        //         latestList = [(label, url)]
+        //         latestHost = url.host() ?? ""
+        //     }
+        // }
     }
     func testConcurrentNetworkImagesScripts() throws {
         // Create an expectation for an asynchronous task.
