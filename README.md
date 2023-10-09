@@ -1,36 +1,26 @@
-# SwiftMathMarkdown
+# MathMarkdown
 
 ## Approaches
-- Study attributed-string-builder and migrate Markdownosaur visit code in.
-- Assemble multiple Markdown to AttributedString collection, review and compare differences later.
-- MarkupFormatter & MarkupTreeDumper uses MarkupWalker protocol
-- BreakDeleter (MarkupFormatter), SoftBreakDeleter both uses MarkupRewriter. 
+- Use RegEx to preprocess Markdown text, and substitute math latex code that swift-markdown and cmark-gfm cannot handle by UUIDs.
+- Apply swift-markdown parsing on the substituted text.
+- Use MarkupWalker to extract the finalized list of network images, local images and math images that need to be generated.
+- Use Async/Await to handle SwiftMathImage and Image download
+- Embed Remote NSTextAttachment(iOS) and NSTextAttachmentCell(macOS) into NSAttributedString
+- Build using a Formatter on NSAttributedString for PDF generation.
+- Prepare for async notification to refresh NSTextAttachment or NSTextAttachmentCell.
 
-## Asynchronous Behaviour consideration
-- SwiftMathDownosaur could accept two closures, one to handle latex images generation, and the other local or remote images loading
-- These can be asynchronous loading effect, keeps changing the contents of the attributed string when contents arrives.
-- Each arrival or notification of the contents, triggers a textLayout refresh.
-- So far, no implementation approaches. May be a bit of Combine.
-
-## Notes
-- Done apply change to Downosaur. AttributedStringBuilder seems complex.
-
-## Limitations
+## Some Limitations
 - objcio.attributed-string-builder (supports cocoa only, uses TextBlock), adopt its MarkupWalker approach, 
-- Markdownosaur uses only MarkupVisitor approach
 - NSAttributedString, paragraphStyle implementation is different across cocoa and uikit. The former has TextBlock for Table.
-- May need to lower the support on iOS.
-- All code uses struct on MarkupVisitor/MarkupWalker, thus cannot subclass and override.
+- struct based MarkupVisitor and MarkupWalkers cannot be subclassed.
+- NSImage, drawn using CoreGraphics preserves Glphy Infos while UIImage does not, end upwith awkward multi-line math equations across PDF pages.
 
 ## References
-- not depend on apple/swift-markdown  https://github.com/objecthub/swift-markdownkit.git
+- This does not depend on apple/swift-markdown  https://github.com/objecthub/swift-markdownkit.git
 - Renderer is publishing to SwiftUI only https://github.com/LiYanan2004/MarkdownView.git/Sources/MardownView/Renderer/Renderer.swift
-- Interesting library to configure view on Markdown visitor,  https://github.com/johnxnguyen/Down.git
+- Other library to configure view on Markdown visitor,  https://github.com/johnxnguyen/Down.git
 - Unfortunately, this only supports MacOS but not iOS.  https://github.com/objcio/attributed-string-builder.git
 - apple/swift-docc/Sources/SwiftDocC/Model/Rendering/RenderContentCompiler use MarkupVisitor
-- https://github.com/nathantannar4/StyleKit.git read StyleKit/StyleKit/Font.swift on Bundle handling.
+- read StyleKit/StyleKit/Font.swift on Bundle handling https://github.com/nathantannar4/StyleKit.git .
 - This is mainly cgContext based rendering, not even covering pdf, https://github.com/shaps80/GraphicsRenderer/tree/master
 - Mainly for drawing stuff, use with GraphicsRenderer, https://github.com/shaps80/InkKit.git
-
-## Sample inline math
-This is a sample `\sqrt{5z+6}-(9+y)^3` test.
