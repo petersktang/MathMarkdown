@@ -183,7 +183,7 @@ internal struct Extractor: MarkupWalker {
         for (range, _) in imageEntries {
             rangeXRef[range.description] = range
         }
-        assert(inlines.count == 0, "Markdown parsing missed previously inserted UUIDs \(inlines.count) out of \(initalInlines) entries.\n\(inlines.values)")
+        assert(inlines.isEmpty, "Markdown parsing missed previously inserted UUIDs, \(inlines.count) out of \(initalInlines) entries.\n\(inlines.values)")
         return (latexEntries + latexBlocks, imageEntries, rangeXRef)
     }
     enum ImageResource {
